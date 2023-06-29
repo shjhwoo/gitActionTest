@@ -11,18 +11,28 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: 버전 정보 추출
-      run: |
-          VERSION_REGEX="([0-9]+\.[0-9]+\.[0-9]+)"
-          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-          if [[ $COMMIT_MESSAGE =~ $VERSION_REGEX ]]; then
-            echo "##[set-output name=version;]${BASH_REMATCH[1]}"
-          fi
-      id: extract_version_name      
-    - name: 변수확인
-      run: echo ${{ steps.extract_version_name.outputs.version }}
-    - name: Create tag
-      run: |
-        git config --local user.email "shjhwoo@trustnhope.com"
-        git config --local user.name "shjhwoo"
-        git tag "v${{ steps.extract_version_name.outputs.version }}"
-        git push --tags
+      run: echo "##[set-output name=version;]$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+      id: extract_version_name       
+    - name: Release 생성 
+      uses: actions/create-release@v1
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITTOKEN }}
+      with: 
+        tag_name: ${{ steps.extract_version_name.outputs.version }} 
+        release_name: ${{ steps.extract_version_name.outputs.version }} 
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: 버전 정보 추출
+#       run: echo "##[set-output name=version;]$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+#       id: extract_version_name       
+#     - name: 변수확인
+#       run: echo ${{ steps.extract_version_name.outputs.version }}
+#     - name: Create tag
+#       run: |
+#         git config --local user.email "shjhwoo@trustnhope.com"
+#         git config --local user.name "shjhwoo"
+#         git tag "v${{ steps.extract_version_name.outputs.version }}"
+#         git push --tags
