@@ -19,5 +19,5 @@ jobs:
       run: |
         git config --local user.email "shjhwoo@trustnhope.com"
         git config --local user.name "shjhwoo"
-        git tag v${{ steps.extract_version_name.outputs.version }}
+        git tag "v${{ steps.extract_version_name.outputs.version }}"
         git push --tags
