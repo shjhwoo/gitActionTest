@@ -15,7 +15,7 @@ jobs:
       - name: Create Release and tag
         uses: actions/create_release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITTOKEN }}
         with:
           tag_name: ${{ steps.ehr_version_name.outputs.version }}
           release_name: ${{ steps.ehr_version_name.outputs.version }}
